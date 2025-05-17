@@ -1,4 +1,4 @@
-package com.faysal.Jobkhujibd_backend.config;
+package com.faysal.Jobkhujibd_backend.configation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

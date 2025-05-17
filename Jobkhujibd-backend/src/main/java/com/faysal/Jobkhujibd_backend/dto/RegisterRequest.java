@@ -1,11 +1,12 @@
 package com.faysal.Jobkhujibd_backend.dto;
 
+import com.faysal.Jobkhujibd_backend.annotation.ValidRole;
 import com.faysal.Jobkhujibd_backend.constants.Role;
 
-import anotation.ValidRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 
 public record RegisterRequest(
         @NotBlank(message = "Email cannot be blank")
@@ -21,13 +22,6 @@ public record RegisterRequest(
 
         String firstName,
         String lastName,
-        Integer age,
-        String gender,
-        String mobile,
-        String city,
-        String state,
-        String pinCode,
-        String companyName,
-        String companyAddress
+        String phoneNumber
 ) {
 }

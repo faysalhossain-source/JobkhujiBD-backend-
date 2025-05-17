@@ -1,18 +1,26 @@
 package com.faysal.Jobkhujibd_backend.controller;
 
+import com.faysal.Jobkhujibd_backend.configaration.JwtTokenProvider;
+import com.faysal.Jobkhujibd_backend.dto.LoginRequest;
+import com.faysal.Jobkhujibd_backend.dto.RegisterRequest;
+import com.faysal.Jobkhujibd_backend.dto.UserResponse;
+import com.faysal.Jobkhujibd_backend.model.CustomUserDetails;
+import com.faysal.Jobkhujibd_backend.model.User;
+import com.faysal.Jobkhujibd_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,46 +32,39 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     public AuthController(AuthenticationManager authenticationManager,
                           JwtTokenProvider jwtTokenProvider,
-                          UserService userService,
-                          PasswordEncoder passwordEncoder) {
+                          UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> registerUser(
+            @Valid @RequestBody RegisterRequest registerRequest
+    ) {
         try {
-            User user = new User();
-            user.setEmail(registerRequest.email());
-            user.setPassword(passwordEncoder.encode(registerRequest.password()));
-            user.setRole(registerRequest.role());
-            user.setMobile(registerRequest.mobile());
-            user.setCity(registerRequest.city());
-            user.setState(registerRequest.state());
-            user.setPinCode(registerRequest.pincode());
-            user.setCompanyName(registerRequest.companyName());
-            user.setCompanyAddress(registerRequest.companyAddress());
+            User user = new User(
+                    registerRequest.email(),
+                    registerRequest.password(),
+                    registerRequest.role(),
+                    registerRequest.firstName(),
+                    registerRequest.lastName(),
+                    registerRequest.phoneNumber()
+            );
 
             User savedUser = userService.createUser(user);
 
+            // Create DTO to return (exclude sensitive info)
             UserResponse userResponse = new UserResponse();
             userResponse.setId(savedUser.getId());
             userResponse.setEmail(savedUser.getEmail());
             userResponse.setRole(savedUser.getRole());
-            userResponse.setMobile(savedUser.getMobile());
-            userResponse.setCity(savedUser.getCity());
-            userResponse.setState(savedUser.getState());
-            userResponse.setPinCode(savedUser.getPinCode());
-            userResponse.setCompanyName(savedUser.getCompanyName());
-            userResponse.setCompanyAddress(savedUser.getCompanyAddress());
-            userResponse.setCreatedAt(savedUser.getCreatedAt());
-            userResponse.setUpdatedAt(savedUser.getUpdatedAt());
+            userResponse.setFirstName(savedUser.getFirstName());
+            userResponse.setLastName(savedUser.getLastName());
+            userResponse.setPhoneNumber(savedUser.getPhoneNumber());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
         } catch (RuntimeException e) {
@@ -72,19 +73,75 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(HttpServletRequest request, HttpServletResponse response,
+    public ResponseEntity<?> authenticateUser(HttpServletRequest request,
+                                              HttpServletResponse response,
                                               @Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password())
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtTokenProvider.createToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtTokenProvider.createToken(authentication);
 
-        Map<String, Object> responseData = new HashMap<>();
-        responseData.put("tokenType", "Bearer");
-        responseData.put("access_token", jwt);
+            // Get user details
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = userDetails.user();
 
-        return ResponseEntity.ok(responseData);
+            // Create response with token and user info
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("access_token", jwt);
+            responseData.put("tokenType", "Bearer");
+
+            // Add user information
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("id", user.getId());
+            userData.put("email", user.getEmail());
+            userData.put("role", user.getRole());
+            userData.put("firstName", user.getFirstName());
+            userData.put("lastName", user.getLastName());
+
+            responseData.put("user", userData);
+
+            return ResponseEntity.ok(responseData);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password");
+        }
+    }
+
+    // This endpoint can be called from Angular to check if a token is valid
+    @GetMapping("/validate-token")
+    public ResponseEntity<?> validateToken(HttpServletRequest request) {
+        String jwt = getJwtFromRequest(request);
+
+        if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
+            String username = jwtTokenProvider.getUsernameFromToken(jwt);
+            UserDetails userDetails = userService.loadUserByUsername(username);
+
+            // Return user information
+            CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+            User user = customUserDetails.user();
+
+            UserResponse userResponse = new UserResponse();
+            userResponse.setId(user.getId());
+            userResponse.setEmail(user.getEmail());
+            userResponse.setRole(user.getRole());
+            userResponse.setFirstName(user.getFirstName());
+            userResponse.setLastName(user.getLastName());
+
+            return ResponseEntity.ok(userResponse);
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+    }
+
+    // Helper method to extract JWT from request
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 }

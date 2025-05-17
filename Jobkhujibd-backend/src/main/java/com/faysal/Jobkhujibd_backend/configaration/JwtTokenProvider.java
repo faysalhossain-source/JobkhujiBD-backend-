@@ -1,5 +1,6 @@
 package com.faysal.Jobkhujibd_backend.configaration;
 
+import com.faysal.Jobkhujibd_backend.model.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -14,20 +15,18 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    // Create a secret key for signing the JWT token
     private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     @Value("${app.jwt.expiration}")
     private int jwtExpirationMs;
 
-    // Generate JWT token from Authentication object
+
     public String createToken(Authentication authentication) {
         CustomUserDetails userPrincipal = (CustomUserDetails) authentication.getPrincipal();
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
-        // Adding custom claims (user ID, email, role)
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .claim("id", userPrincipal.getId())
@@ -39,28 +38,42 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Extract username from JWT token
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
         return claims.getSubject();
     }
 
-    // Validate the JWT token
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (SignatureException ex) {
-            log.error("Invalid JWT signature: {}", token);
+        } catch (SecurityException ex) {
+            log.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token: {}", token);
+            log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token: {}", token);
+            log.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token: {}", token);
+            log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty: {}", token);
+            log.error("JWT claims string is empty");
         }
         return false;
+    }
+
+    public Claims getClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

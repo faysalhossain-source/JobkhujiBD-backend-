@@ -3,6 +3,9 @@ package com.faysal.Jobkhujibd_backend.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public record PasswordChangeRequest(
         @NotBlank(message = "Current password cannot be blank")
         String currentPassword,
