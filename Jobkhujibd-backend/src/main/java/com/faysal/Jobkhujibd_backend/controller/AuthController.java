@@ -6,7 +6,7 @@ import com.faysal.Jobkhujibd_backend.dto.RegisterRequest;
 import com.faysal.Jobkhujibd_backend.dto.UserResponse;
 import com.faysal.Jobkhujibd_backend.model.CustomUserDetails;
 import com.faysal.Jobkhujibd_backend.model.User;
-import com.faysal.Jobkhujibd_backend.service.UserService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
