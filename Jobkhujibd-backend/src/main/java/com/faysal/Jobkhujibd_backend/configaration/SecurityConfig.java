@@ -1,4 +1,4 @@
-package com.faysal.Jobkhujibd_backend.configation;
+package com.faysal.Jobkhujibd_backend.Config;
 
 import com.faysal.Jobkhujibd_backend.configaration.JwtAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;

@@ -14,7 +14,7 @@ public class UserResponse {
     private Role role;
 
     private String mobile;
-  
+
 
     private String city;
     private String state;
@@ -24,4 +24,7 @@ public class UserResponse {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
 }

@@ -1,9 +1,9 @@
 package com.faysal.Jobkhujibd_backend.service;
 
+import com.faysal.Jobkhujibd_backend.model.CustomUserDetails;
+import com.faysal.Jobkhujibd_backend.model.User;
+import com.faysal.Jobkhujibd_backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.isdb.DoctorBackend.model.CustomUserDetails;
-import org.isdb.DoctorBackend.model.User;
-import org.isdb.DoctorBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

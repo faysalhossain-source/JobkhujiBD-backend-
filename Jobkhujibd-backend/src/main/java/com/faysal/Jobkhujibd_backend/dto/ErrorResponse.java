@@ -1,6 +1,5 @@
 package com.faysal.Jobkhujibd_backend.dto;
 
-
 import java.util.List;
 
 public record ErrorResponse(

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Data
-@Table(name= "jkbd_job_listing")
+@Table(name = "jkbd_job_listing")
 
 public class JobListing {
 

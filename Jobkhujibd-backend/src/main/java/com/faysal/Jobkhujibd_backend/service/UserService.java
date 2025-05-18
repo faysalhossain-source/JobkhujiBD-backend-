@@ -1,14 +1,18 @@
 package com.faysal.Jobkhujibd_backend.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.faysal.Jobkhujibd_backend.constants.Role;
+import com.faysal.Jobkhujibd_backend.model.CustomUserDetails;
+import com.faysal.Jobkhujibd_backend.model.User;
+import com.faysal.Jobkhujibd_backend.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.faysal.Jobkhujibd_backend.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {

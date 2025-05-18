@@ -3,8 +3,8 @@ package com.faysal.Jobkhujibd_backend.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.faysal.Jobkhujibd_backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
 import com.faysal.Jobkhujibd_backend.constants.Role;

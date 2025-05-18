@@ -2,7 +2,6 @@ package com.faysal.Jobkhujibd_backend.dto;
 
 import com.faysal.Jobkhujibd_backend.annotation.ValidRole;
 import com.faysal.Jobkhujibd_backend.constants.Role;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
