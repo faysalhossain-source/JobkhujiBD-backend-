@@ -1,4 +1,4 @@
-package com.faysal.Jobkhujibd_backend.Config;
+package com.faysal.Jobkhujibd_backend.configaration;
 
 import com.faysal.Jobkhujibd_backend.configaration.JwtAuthenticationFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,12 +40,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
 
-//                .requestMatchers("/api/auth/**").permitAll()
-//                .requestMatchers("/api/public/**").permitAll()
-//                .requestMatchers("/api/jobseeker/**").hasAnyRole("JOBSEEKER", "ADMIN")
-//                .requestMatchers("/api/employer/**").hasAnyRole("EMPLOYER", "ADMIN")
-//                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/jobseeker/**").hasAnyRole("JOBSEEKER", "ADMIN")
+                .requestMatchers("/api/employer/**").hasAnyRole("EMPLOYER", "ADMIN")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                    .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

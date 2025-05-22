@@ -1,18 +1,21 @@
 package com.faysal.Jobkhujibd_backend.service;
 
 import com.faysal.Jobkhujibd_backend.model.JobListing;
-import com.faysal.Jobkhujibd_backend.repository.JobListingRepository;
+
+import com.faysal.Jobkhujibd_backend.repository.JobListingRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class JobListingService {
 
-    @Autowired
-    private JobListingRepository jobListingRepository;
+
+    private final JobListingRepo jobListingRepository ;
 
     // Create
     public JobListing createJobListing(JobListing jobListing) {
@@ -39,7 +42,6 @@ public class JobListingService {
             job.setPay_scale(updatedJob.getPay_scale());
             job.setDescription(updatedJob.getDescription());
             job.setCreateDate(updatedJob.getCreateDate());
-            job.setAction(updatedJob.getAction());
             return jobListingRepository.save(job);
         });
     }

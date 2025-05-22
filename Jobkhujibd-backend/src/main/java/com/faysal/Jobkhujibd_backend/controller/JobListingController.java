@@ -1,7 +1,7 @@
 package com.faysal.Jobkhujibd_backend.controller;
 
 import com.faysal.Jobkhujibd_backend.model.JobListing;
-import com.faysal.Jobkhujibd_backend.repository.JobListingRepository;
+
 import com.faysal.Jobkhujibd_backend.service.JobListingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/job-listings")
+@RequestMapping("/api/auth/job-listings")
 
 public class JobListingController {
 

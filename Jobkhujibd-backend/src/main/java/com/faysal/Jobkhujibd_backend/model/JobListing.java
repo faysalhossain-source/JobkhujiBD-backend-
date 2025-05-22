@@ -22,15 +22,14 @@ public class JobListing {
     //2
     private String category;
     //3
-    private String location;
-    //4
     private String experience;
-    //5
+    //4
     private String pay_scale;
+    //5
+    private String location;
     //6
     private String description;
     //7
     private String createDate;  //data type string for OMAR's shortcut
-    //8
-    private String action;
+
 }

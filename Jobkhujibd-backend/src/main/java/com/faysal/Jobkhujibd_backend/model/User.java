@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "T_USERS")
+@Table(name = "Faysal_USERS")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +19,10 @@ public class User {
     @JsonIgnore
     @Column(nullable = false)
     private String password;
+
+   // @JsonIgnore
+    //@Column(nullable = false)
+   // private String confirmPassword;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
