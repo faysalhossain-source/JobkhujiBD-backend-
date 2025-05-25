@@ -54,11 +54,16 @@ public class UserController {
     }
 
     @GetMapping("/role/{role}")
-    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getUsersByRole(@PathVariable Role role) {
         return userService.getUsersByRole(role).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/role/count")
+    public long countEmpByRole(@RequestParam Role role) {
+        long count = userService.getUsersByRole(role).stream().count();
+        return count;
     }
 
     @PostMapping
