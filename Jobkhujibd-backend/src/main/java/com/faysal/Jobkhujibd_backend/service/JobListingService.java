@@ -1,21 +1,20 @@
 package com.faysal.Jobkhujibd_backend.service;
 
 import com.faysal.Jobkhujibd_backend.model.JobListing;
-
 import com.faysal.Jobkhujibd_backend.repository.JobListingRepo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class JobListingService {
 
+    private final JobListingRepo jobListingRepository;
 
-    private final JobListingRepo jobListingRepository ;
+    public JobListingService(JobListingRepo jobListingRepository) {
+        this.jobListingRepository = jobListingRepository;
+    }
 
     // Create
     public JobListing createJobListing(JobListing jobListing) {

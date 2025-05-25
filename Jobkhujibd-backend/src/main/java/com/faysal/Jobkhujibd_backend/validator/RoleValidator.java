@@ -13,7 +13,7 @@ public class RoleValidator implements ConstraintValidator<ValidRole, String> {
         if (value == null || value.isBlank()) return false;
 
         try {
-            Role.valueOf(value.toUpperCase()); // will throw exception if not valid
+            Role.valueOf(value.toUpperCase());
             return true;
         } catch (IllegalArgumentException ex) {
             return false;

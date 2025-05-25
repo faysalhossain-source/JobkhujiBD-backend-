@@ -14,28 +14,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
-    private final ApplycationFileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
+
+    public ApplicationService(ApplicationRepository applicationRepository, FileStorageService fileStorageService) {
+        this.applicationRepository = applicationRepository;
+        this.fileStorageService = fileStorageService;
+    }
 
     @Transactional
     public ApplicationResponse submitApplication(ApplicationRequest request) {
-        // Check if already applied
         if (applicationRepository.existsByEmailAndCompanyId(request.getEmail(), request.getCompanyId())) {
             throw new ApplicationException("You have already applied to this company");
         }
 
-        // Validate file size (5MB max)
         if (request.getResume().getSize() > 5 * 1024 * 1024) {
             throw new ApplicationException("File size exceeds 5MB limit");
         }
 
-        // Store file
         String resumePath = fileStorageService.store(request.getResume());
 
-        // Save application
         Application application = new Application();
         application.setCompanyId(request.getCompanyId());
         application.setFullName(request.getFullName());
@@ -61,7 +61,7 @@ public class ApplicationService {
         String filename = application.getResumePath();
         Resource resource = fileStorageService.loadAsResource(filename);
 
-        if (!resource.exists() || !resource.isReadable()) {
+        if (resource == null || !resource.exists() || !resource.isReadable()) {
             throw new ApplicationException("Could not read file: " + filename);
         }
 
@@ -70,17 +70,11 @@ public class ApplicationService {
 
     private ApplicationResponse mapToResponse(Application application) {
         ApplicationResponse response = new ApplicationResponse();
-
         response.setId(application.getId());
-
         response.setCompanyId(application.getCompanyId());
-
         response.setFullName(application.getFullName());
-
         response.setEmail(application.getEmail());
-
         response.setAppliedAt(application.getAppliedAt());
-
         response.setResumeDownloadUrl("/api/applications/" + application.getId() + "/resume");
         return response;
     }
