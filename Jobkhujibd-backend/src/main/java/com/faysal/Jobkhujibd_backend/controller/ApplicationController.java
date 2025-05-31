@@ -21,17 +21,17 @@ public class ApplicationController {
     private ApplicationService applicationService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApplicationResponse> submitApplication(
-            @RequestParam String companyId,
-            @RequestParam String fullName,
-            @RequestParam String email,
-            @RequestParam MultipartFile resume) {
+    public ResponseEntity<ApplicationResponse> submitApplication(@ModelAttribute
+                                                                 @RequestParam String companyId,
+                                                                 @RequestParam String fullName,
+                                                                 @RequestParam String email,
+                                                                 @RequestParam MultipartFile resumePath) {
 
         ApplicationRequest request = new ApplicationRequest();
         request.setCompanyId(companyId);
         request.setFullName(fullName);
         request.setEmail(email);
-        request.setResume(resume);
+        request.setResumePath(resumePath);
 
         ApplicationResponse response = applicationService.submitApplication(request);
         return ResponseEntity.ok(response);

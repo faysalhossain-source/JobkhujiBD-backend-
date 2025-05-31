@@ -30,11 +30,11 @@ public class ApplicationService {
             throw new ApplicationException("You have already applied to this company");
         }
 
-        if (request.getResume().getSize() > 5 * 1024 * 1024) {
+        if (request.getResumePath().getSize() > 5 * 1024 * 1024) {
             throw new ApplicationException("File size exceeds 5MB limit");
         }
 
-        String resumePath = fileStorageService.store(request.getResume());
+        String resumePath = fileStorageService.store(request.getResumePath());
 
         Application application = new Application();
         application.setCompanyId(request.getCompanyId());

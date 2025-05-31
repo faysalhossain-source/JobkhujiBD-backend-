@@ -8,7 +8,10 @@ import java.util.List;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
-    List<Application> findByCompanyId(String companyId);
+
 
     boolean existsByEmailAndCompanyId(String email, String companyId);
+    List<Application> findByCompanyId(String companyId);
+
+
 }

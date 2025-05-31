@@ -20,7 +20,7 @@ public class Application {
     @Column(nullable = false)
     private String fullName;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
     
     @Column(nullable = false)

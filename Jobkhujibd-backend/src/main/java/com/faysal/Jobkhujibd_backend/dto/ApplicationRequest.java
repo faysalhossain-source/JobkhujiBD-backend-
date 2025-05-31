@@ -8,5 +8,5 @@ public class ApplicationRequest {
     private String companyId;
     private String fullName;
     private String email;
-    private MultipartFile resume;
+    private MultipartFile resumePath;
 }
